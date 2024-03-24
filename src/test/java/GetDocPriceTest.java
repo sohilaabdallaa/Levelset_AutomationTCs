@@ -1,31 +1,33 @@
+import Actions.BrowserActions;
 import POM.DocumentPage;
 import POM.HomePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.v119.browser.Browser;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class GetDocPriceTest {
-    static WebDriver driver;
+    @BeforeMethod
+    public void setUp(){
+        BrowserActions.init(BrowserActions.BrowserType.chrome);
+    }
 
     @Test
     public void validatePrice()
     {
-        driver = new ChromeDriver();
-        HomePage homePage = new HomePage(driver);
-        homePage.navigate();
-
-        DocumentPage docmentpage = new DocumentPage(driver);
-        docmentpage = homePage.clickGetPaidButton();
-
+        HomePage homePage = new HomePage();
+        homePage.navigation();
+        homePage.clickGetPaidButton();
+        DocumentPage docmentpage = new DocumentPage();
         docmentpage.getDocumentPrice("Release a Lein");
-
         Assert.assertTrue(docmentpage.getDocumentPrice("Release a Lein").contains("$149"));
-
     }
-    @AfterClass
+    @AfterMethod
     public void closeDriver(){
-        driver.quit();
+        BrowserActions.quitDriver();
     }
 }
